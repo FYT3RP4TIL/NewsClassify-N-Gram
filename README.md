@@ -271,8 +271,6 @@ weighted avg       0.86      0.86      0.86      1105
 
 This model's performance suggests that the combination of text preprocessing and using 1-2 grams effectively captures the distinctive features of each news category, leading to accurate classification.
 
-The best performance was achieved using 1-2 grams with text preprocessing, reaching an accuracy of 0.86.
-
 ## 🚀 Future Improvements
 
 - Experiment with other classification algorithms (e.g., SVM, Random Forest)
