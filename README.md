@@ -78,6 +78,20 @@ CRIME       2893
 SCIENCE     1381
 Name: count, dtype: int64
 ```
+## ⚖️ Handling Class Imbalance
+
+To address the class imbalance, we undersample the majority classes:
+
+```python
+min_samples = 1381  # number of samples in the minority class (SCIENCE)
+
+df_balanced = pd.concat([
+    df[df.category=="BUSINESS"].sample(min_samples, random_state=2022),
+    df[df.category=="SPORTS"].sample(min_samples, random_state=2022),
+    df[df.category=="CRIME"].sample(min_samples, random_state=2022),
+    df[df.category=="SCIENCE"]
+])
+```
 
 ## 🧹 Data Preprocessing
 
@@ -100,20 +114,6 @@ def preprocess(text):
 
 This function removes stop words and punctuation, and lemmatizes the text.
 
-## ⚖️ Handling Class Imbalance
-
-To address the class imbalance, we undersample the majority classes:
-
-```python
-min_samples = 1381  # number of samples in the minority class (SCIENCE)
-
-df_balanced = pd.concat([
-    df[df.category=="BUSINESS"].sample(min_samples, random_state=2022),
-    df[df.category=="SPORTS"].sample(min_samples, random_state=2022),
-    df[df.category=="CRIME"].sample(min_samples, random_state=2022),
-    df[df.category=="SCIENCE"]
-])
-```
 
 ## 🧠 Model Training and Evaluation
 
