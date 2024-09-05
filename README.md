@@ -179,7 +179,49 @@ weighted avg       0.85      0.82      0.83      1105
 weighted avg       0.84      0.82      0.82      1105
 ```
 
-4. Bag of 1-2 grams with text preprocessing:
+## 🏆 Best Model Results: Bag of 1-2 grams with Text Preprocessing
+
+### Model Configuration
+
+This model uses a combination of text preprocessing and bag of 1-2 grams, which proved to be the most effective approach in our news classification task.
+
+### Preprocessing Step
+
+```python
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+
+def preprocess(text):
+    doc = nlp(text)
+    filtered_tokens = []
+    for token in doc:
+        if token.is_stop or token.is_punct:
+            continue
+        filtered_tokens.append(token.lemma_)
+    return " ".join(filtered_tokens)
+
+df_balanced['preprocessed_txt'] = df_balanced['text'].apply(preprocess)
+```
+
+### Model Pipeline
+
+```python
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import Pipeline
+
+clf = Pipeline([
+    ('vectorizer_bow', CountVectorizer(ngram_range=(1, 2))),
+    ('Multi NB', MultinomialNB())
+])
+
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+```
+
+## Classification Report
+
 ```
               precision    recall  f1-score   support
 
@@ -192,6 +234,42 @@ weighted avg       0.84      0.82      0.82      1105
    macro avg       0.86      0.86      0.86      1105
 weighted avg       0.86      0.86      0.86      1105
 ```
+
+## Results Breakdown
+
+- **Overall Accuracy**: 0.86 (86%)
+
+- **Per-Class Performance**:
+  - Class 0 (BUSINESS):
+    - Precision: 0.80
+    - Recall: 0.88
+    - F1-score: 0.84
+  - Class 1 (SPORTS):
+    - Precision: 0.92
+    - Recall: 0.82
+    - F1-score: 0.87
+  - Class 2 (CRIME):
+    - Precision: 0.83
+    - Recall: 0.92
+    - F1-score: 0.87
+  - Class 3 (SCIENCE):
+    - Precision: 0.90
+    - Recall: 0.81
+    - F1-score: 0.85
+
+## Analysis
+
+1. **Balanced Performance**: The model shows consistent performance across all classes, with F1-scores ranging from 0.84 to 0.87. This indicates that the preprocessing and balanced dataset have helped in achieving uniform classification across categories.
+
+2. **High Precision for SPORTS**: The model is particularly good at identifying SPORTS articles correctly, with a precision of 0.92. This means when it predicts an article is about sports, it's right 92% of the time.
+
+3. **High Recall for CRIME**: The model catches 92% of all CRIME articles in the dataset, showing high sensitivity for this category.
+
+4. **Room for Improvement**: While the overall performance is good, there's still room for improvement, especially in the recall for SCIENCE articles and precision for BUSINESS articles.
+
+5. **Effectiveness of Preprocessing**: The improvement in performance compared to models without preprocessing demonstrates the value of the text cleaning and lemmatization steps.
+
+This model's performance suggests that the combination of text preprocessing and using 1-2 grams effectively captures the distinctive features of each news category, leading to accurate classification.
 
 The best performance was achieved using 1-2 grams with text preprocessing, reaching an accuracy of 0.86.
 
